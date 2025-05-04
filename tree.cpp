@@ -5,6 +5,19 @@
 
 using namespace std;
 
+struct node{ // para representar cada arquivo ou pasta , estrutra para isso
+    string name;
+    string path;
+    bool directory;
+    long long size;//tamanho em bytes para arquivo
+    vector<node*> children;
+
+    node(string n, string p, bool Diretorio, long long s =0/*size*/);
+
+};
+
+
+
 bool verificaArqRegularPasta (const char *caminho) {         // utilizando mesma função usada na aula de SO
                                                             // para verificar se é um arquivo regular ou  uma pasta
     // struct para armazenar informações do arquivo         // passando como parâmetro o caminho do que se deseja verificar                                       
