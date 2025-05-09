@@ -1,10 +1,13 @@
 #include <sys/stat.h>
 #include<sys/types.h>
 
-bool verificaArqRegularPasta (const char *caminho) {         // utilizando mesma função usada na aula de SO
-    // para verificar se é um arquivo regular ou  uma pasta
-// struct para armazenar informações do arquivo         // passando como parâmetro o caminho do que se deseja verificar                                       
-struct stat file_info;                                  
+// utilizando mesma função usada na aula de SO
+// para verificar se é um arquivo regular ou  uma pasta
+ // passando como parâmetro o caminho do que se deseja verificar    
+
+bool verificaArqRegularPasta (const char *caminho) {      
+                                      
+struct stat file_info;               // struct para armazenar informações do arquivo                      
 
 if (stat(caminho,&file_info) == -1) {  // recebendo informações do arquivo
 return false;              
