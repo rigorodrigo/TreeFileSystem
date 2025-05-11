@@ -1,5 +1,4 @@
 #include <iostream>
-//#include "verificarArquivoRegular.cpp"
 #include "tree.cpp"
 
 using namespace std;

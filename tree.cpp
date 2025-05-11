@@ -4,6 +4,8 @@
 #include <filesystem>
 #include "verificarArquivoRegular.cpp"
 
+namespace fs = std::filesystem;  // nomeando um namespace para facilitar 
+
 struct node{ // para representar cada arquivo ou pasta , estrutra para isso
     std::string name;
     std::string path;
@@ -28,7 +30,9 @@ class Tree {
 
     private:
 
-    node* loadRecursive (const std::string &path) {
+        // método privado que realmente carrega a arvore de maneira recursiva. usei ele como private por causa do encapsulamento 
+
+    node* loadRecursive (const std::string &path) {  
 
         if (!verificaArqRegularPasta(path.c_str())) return nullptr;   // chamando a função que verifica se é um arquivo regular ou uma pasta (usando o "c_str")
 
@@ -36,18 +40,56 @@ class Tree {
         if (!std::filesystem::is_directory(path)){
             // se não for,  assume que é um nó folha (arquivo), e então retorna um  novo nó sem filhos,e seu nome,caminho,false para pasta e seu tamanho 
             // (também contando com ajuda da lib filesystem)
-            return new node (std::filesystem::path(path).filename(),path,false,std::filesystem::file_size(path));
+            return new node (fs::path(path).filename(),path,false,fs::file_size(path));
         }
 
-        
+        node * directoryNode = new node (fs::path(path).filename(),path,true);      // se for um diretório, cria um nó para ele
+
+        // e irei iterar sobre os arquivos do diretório com o "directory_iterator" ,também da lib filesystem
+
+        for (const auto& n : fs::directory_iterator()){
+
+            // chama recursivamente a função passando o nó filho como parâmetro
+            node * childrenNode = loadRecursive(n.path().string());             // path pega o caminho da variável n que percorre o diretório e é convertido para string (argumento da função)
+
+            if (childrenNode != nullptr) {
+                directoryNode->children.push_back(childrenNode);       // se o nó filho existir (não for nulo), será adicionado ao vetor dos filhos
+            }
+        }
+
+
+        return directoryNode;
     }
+
+     void showRecursiveTree (node* n, int level = 0) {
+
+
+     }
 
 
     public:
 
-    node LoadTree (const std::string &path) {
+    // método público que inicializa a árvore a partir do caminho fornecido
 
-        loadRecursive(path);
+    bool LoadTree (const std::string &path) {   
+
+        if (root != nullptr){  // se já existe uma árvore inicializada...
+            // implementar forma de "limpar" a arvore ja existente
+        }
+
+        if (!fs::exists(path)) {         // verifica se o caminho realmente existe
+            return false;
+        }
+
+        root = loadRecursive(path);       // armazenando o nó raiz
+
+        return root != nullptr;        // retorna true se o carregamento foi feito com sucesso
+                                      // caso contrário, retorna false
+    }
+
+    void showTree() {
+
+        showRecursiveTree(root);
 
     }
 };
