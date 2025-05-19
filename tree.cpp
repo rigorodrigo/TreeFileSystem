@@ -67,12 +67,20 @@ class Tree {
         if (!n) return;
 
         if (n->directory){       // se for uma pasta
-            std::cout << s << n->name << std::endl;
+            std::cout << s << n->name << " ( " << n->children.size() << " filhos, " << n->size << " bytes)" << std::endl;
         }
         else {   // se for um arquivo
             std::cout << n->name << " (" << n->size << " bytes)" << std::endl;
         }
 
+        for (int i = 0; i < n->children.size(); i++){       // iiterando sobre o vetor com os filhos
+            if ( i == (n->children.size() - 1) ){        // se for o último
+
+            }
+            else{         // se não for o último
+
+            }
+        }
 
      }
 
