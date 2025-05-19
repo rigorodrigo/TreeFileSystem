@@ -48,7 +48,7 @@ class Tree {
 
         // e irei iterar sobre os arquivos do diretório com o "directory_iterator" ,também da lib filesystem
 
-        for (const auto& n : fs::directory_iterator()){
+        for (const auto& n : fs::directory_iterator(path)){
 
             // chama recursivamente a função passando o nó filho como parâmetro
             node * childrenNode = loadRecursive(n.path().string());             // path pega o caminho da variável n que percorre o diretório e é convertido para string (argumento da função)
@@ -74,11 +74,11 @@ class Tree {
         }
 
         for (int i = 0; i < n->children.size(); i++){       // iiterando sobre o vetor com os filhos
-            if ( i == (n->children.size() - 1) ){        // se for o último
-
+            if ( i == (n->children.size() - 1) ){        // se for o último filho
+                showRecursiveTree(n->children[i],level +1, s + "└── ");
             }
-            else{         // se não for o último
-
+            else{         // se não for o último filho
+                showRecursiveTree(n->children[i],level + 1, s + "├──");
             }
         }
 
