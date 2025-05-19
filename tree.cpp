@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <filesystem>
 #include "verificarArquivoRegular.cpp"
+#include <iostream>
 
 namespace fs = std::filesystem;  // nomeando um namespace para facilitar 
 
@@ -61,7 +62,16 @@ class Tree {
         return directoryNode;
     }
 
-     void showRecursiveTree (node* n, int level = 0) {
+     void showRecursiveTree (node* n, int level = 0,std::string s = "") {
+
+        if (!n) return;
+
+        if (n->directory){       // se for uma pasta
+            std::cout << s << n->name << std::endl;
+        }
+        else {   // se for um arquivo
+            std::cout << n->name << " (" << n->size << " bytes)" << std::endl;
+        }
 
 
      }
