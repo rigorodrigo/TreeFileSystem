@@ -33,7 +33,7 @@ class Tree {
 
         // método privado que realmente carrega a arvore de maneira recursiva. usei ele como private por causa do encapsulamento 
 
-    node* loadRecursive (const std::string &path) {  
+    node* loadRecursive (const std::string &path)  {  
 
         if (!verificaArqRegularPasta(path.c_str())) return nullptr;   // chamando a função que verifica se é um arquivo regular ou uma pasta (usando o "c_str")
 
@@ -62,7 +62,7 @@ class Tree {
         return directoryNode;
     }
 
-     void showRecursiveTree (node* n, int level = 0,std::string s = "") {
+     void showRecursiveTree (node* n, int level = 0,std::string s = "") const  {
 
         if (!n) return;
 
@@ -84,15 +84,25 @@ class Tree {
 
      }
 
+     void clearTree (node *root) {
+        if (!root) return;
+        for (auto c : root->children){
+            clearTree(c);
+        }
+
+        delete root;
+     }
+
 
     public:
 
     // método público que inicializa a árvore a partir do caminho fornecido
 
-    bool LoadTree (const std::string &path) {   
+    bool LoadTree (const std::string &path)  {   
 
         if (root != nullptr){  // se já existe uma árvore inicializada...
-            // implementar forma de "limpar" a arvore ja existente
+            clearTree(root);  // limpa ela da memória
+            root = nullptr;
         }
 
         if (!fs::exists(path)) {         // verifica se o caminho realmente existe
@@ -105,7 +115,7 @@ class Tree {
                                       // caso contrário, retorna false
     }
 
-    void showTree() {
+    void showTree() const {
 
         showRecursiveTree(root);
 
