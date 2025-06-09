@@ -33,15 +33,44 @@ class Tree {
 
         // método privado que realmente carrega a arvore de maneira recursiva. usei ele como private por causa do encapsulamento 
 
-    node* loadRecursive (const std::string &path)  {  
+    node* loadRecursive (const std::string &path) {  
+
+
+        if(!fs::exists(path)){
+            return nullptr; // caminho nao existe 
+        }
 
         if (!verificaArqRegularPasta(path.c_str())) return nullptr;   // chamando a função que verifica se é um arquivo regular ou uma pasta (usando o "c_str")
 
+
+
+
         //usando a bilbioteca filesystem, verifica se é um diretório
         if (!std::filesystem::is_directory(path)){
+
+            long long _file_size = 0;
+
+
+                //tratamento de erro (ideias de POO)
+             try {
+                   _file_size = fs::file_size(path);  //se for arquivo retorna com seu tamanho
+                 }  
+                 catch (const fs::filesystem_error& e) {
+
+                    //vereficar 
+                    //executa somente quando ocorre erro, cerr(exclusivo para erros)                 e.what() -> retorna String que descreve o erro detalhadamente
+            std::cerr << "Aviso: Nao foi possível obter o tamanho do arquivo '" << path << "': " << e.what() << ". Sera considerado 0 bytes." << std::endl;
+            return new node(fs::path(path).filename().string(), path, false, 0);
+        }
+
+
+        //futuramente um nodo para o tmamho do diretorio?
+         node *directoryNode = new node(fs::path(path).filename().string(), path, true);
+
             // se não for,  assume que é um nó folha (arquivo), e então retorna um  novo nó sem filhos,e seu nome,caminho,false para pasta e seu tamanho 
             // (também contando com ajuda da lib filesystem)
-            return new node (fs::path(path).filename(),path,false,fs::file_size(path));
+            
+             return new node(fs::path(path).filename().string(), path, false, _file_size);
         }
 
         node * directoryNode = new node (fs::path(path).filename(),path,true);      // se for um diretório, cria um nó para ele
@@ -62,7 +91,7 @@ class Tree {
         return directoryNode;
     }
 
-     void showRecursiveTree (node* n, int level = 0,std::string s = "") const  {
+     void showRecursiveTree (node* n, int level = 0,std::string s = "") {
 
         if (!n) return;
 
@@ -84,25 +113,15 @@ class Tree {
 
      }
 
-     void clearTree (node *root) {
-        if (!root) return;
-        for (auto c : root->children){
-            clearTree(c);
-        }
-
-        delete root;
-     }
-
 
     public:
 
     // método público que inicializa a árvore a partir do caminho fornecido
 
-    bool LoadTree (const std::string &path)  {   
+    bool LoadTree (const std::string &path) {   
 
         if (root != nullptr){  // se já existe uma árvore inicializada...
-            clearTree(root);  // limpa ela da memória
-            root = nullptr;
+            // implementar forma de "limpar" a arvore ja existente
         }
 
         if (!fs::exists(path)) {         // verifica se o caminho realmente existe
@@ -115,7 +134,7 @@ class Tree {
                                       // caso contrário, retorna false
     }
 
-    void showTree() const {
+    void showTree() {
 
         showRecursiveTree(root);
 
