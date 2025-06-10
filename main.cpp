@@ -1,11 +1,9 @@
-
+#include <iostream>
 #include <string>
 #include <limits>
 #include "tree.cpp"
 
 using namespace std; 
-//ver de passar um diretorio
-//para uma melhor organização do código
 
 void displayMainMenu() {
     cout << "\n--- Menu ---" << endl;
@@ -16,34 +14,34 @@ void displayMainMenu() {
     cout << "-----------------------" << endl;
     cout << "opção: ";
 }
-//teste de commit
+
 void displaySearchSubMenu() {
     cout << "\n--- Buscar ---" << endl;
-    cout << " Maior arquivo" << endl;
+    cout << " 1. Maior arquivo" << endl;
     cout << " Arquivos maiores que N bytes" << endl;
     cout << " Pasta com mais arquivos" << endl;
     cout << " Arquivos por extensão específica" << endl;
     cout << " Pastas vazias" << endl;
-    cout << " Voltar ao menu principal" << endl;
+    cout << " 9. Voltar ao menu principal" << endl;
     cout << "---------------------------" << endl;
-    cout << "Escolha uma opçao: ";
+    cout << "Escolha uma tarefa de busca: ";
 }
 
-int main(int argc, char* argv[]) { //main receber argumentos 
+int main(int argc, char* argv[]) {
     Tree fileSystemExplorer;
 
-    string startPath = ".";
+    string startPath = "."; //como não é especificado ele pega os arquivos da pasta em que esta inserido / Ajustar isso 
     if (argc > 1) {
         startPath = argv[1];
     }
 
-    
-    if (!fileSystemExplorer.LoadTree(startPath)) { //cerr, saida de erro padrao
-        cerr << "Não foi possível carregar a árvore do sistema de arquivos de '" << startPath
-                   << endl;
+    cout << "Tentando carregar o sistema de arquivos de: '" << startPath << "'..." << endl;
+    if (!fileSystemExplorer.LoadTree(startPath)) {
+        cerr << "Puxa! Não foi possível carregar a árvore do sistema de arquivos de '" << startPath
+                  << "'. Talvez o caminho esteja errado, ou as permissões estejam complicadas?" << endl;
         return 1;
     }
-    cout << "Árvore carregada !" << endl;
+    cout << "Árvore carregada com sucesso! Pronto para explorar." << endl;
 
     int choice;
 
@@ -51,10 +49,10 @@ int main(int argc, char* argv[]) { //main receber argumentos
         displayMainMenu();
         cin >> choice;
 
-        if (cin.fail()) { //um checker pra entrada
-            cout << "opção válida!" << endl;
+        if (cin.fail()) {
+            cout << "Isso não foi um número. Por favor, tente novamente com uma opção válida!" << endl;
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');//pra limpeza do buffer de forma boa, invez do .clear()
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
 
@@ -64,7 +62,7 @@ int main(int argc, char* argv[]) { //main receber argumentos
                 fileSystemExplorer.showTree();
                 break;
             case 2:
-                cout << "Exportar para HTML:(Nao feito)" << endl;
+                cout << "Exportar para HTML: Ainda na prancheta. Volte mais tarde!" << endl;
                 break;
             case 3: {
                 int subChoice;
@@ -73,26 +71,29 @@ int main(int argc, char* argv[]) { //main receber argumentos
                     cin >> subChoice;
 
                     if (cin.fail()) {
-                        cout << " não é um número válido. Tente novamente!" << endl;
+                        cout << "Hmm, não é um número válido. Tente novamente!" << endl;
                         cin.clear();
                         cin.ignore(numeric_limits<streamsize>::max(), '\n');
                         continue;
                     }
-
-                    if (subChoice == 9) { //teste
+                    if (subChoice == 1) {
+                        fileSystemExplorer.findBiggerFile();
+                        break;
+                    }
+                    if (subChoice == 9) {
                         cout << "Retornando ao menu principal." << endl;
                         break;
                     }
 
-                    cout << " ---- " << endl;
+                    cout << "Essa funcionalidade de busca (" << subChoice << ") ainda não está implementada. Paciência, jovem padawan!" << endl;
                 }
                 break;
             }
             case 0:
-                cout << "saindo!" << endl;
+                cout << "Saindo. Obrigado por usar o Explorador de Sistema de Arquivos! Adeus!" << endl;
                 return 0;
             default:
-                cout << "Opção inválida!" << endl;
+                cout << "Opção inválida! Por favor, escolha um número do menu." << endl;
                 break;
         }
     }
