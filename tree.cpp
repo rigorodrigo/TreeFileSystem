@@ -114,7 +114,32 @@ class Tree {
         }
 
      }
+     
+     void findDirsRecursive(node* n, int& maxCount, std::vector<node*>& result) {
+        if (!n || !n->directory) return;
 
+        int fileCount = 0;
+
+        for (auto child : n->children) {
+            if (!child->directory) {
+                fileCount++;
+            }
+        }
+
+        if (fileCount > maxCount) {
+            maxCount = fileCount;
+            result.clear();
+            result.push_back(n);
+        } else if (fileCount == maxCount) {
+            result.push_back(n);
+        }
+
+        for (auto child : n->children) {
+            if (child->directory) {
+                findDirsRecursive(child, maxCount, result);
+            }
+        }
+    }
 
     public:
 
@@ -186,7 +211,7 @@ class Tree {
             }
 
             for(node* child : n->children){
-                find(child); //chama recursivamente a função de busca para o filho dese nó
+                find(child); //chama recursivamente a função de busca para o filho desse nó
             }
         };
 
@@ -201,6 +226,29 @@ class Tree {
             }
         }
         
+    }
+
+
+    void findDirsWithMostFiles() {
+        if (!root) {
+            std::cout << "Árvore vazia.\n";
+            return;
+        }
+
+        int maxCount = -1;
+        std::vector<node*> result;
+
+        findDirsRecursive(root, maxCount, result);
+
+        if (maxCount <= 0) {
+            std::cout << "Nenhuma pasta com arquivos encontrados.\n";
+            return;
+        }
+
+        std::cout << "Pasta(s) com mais arquivos diretos (" << maxCount << " arquivo(s)):\n";
+        for (auto dir : result) {
+            std::cout << "- " << dir->path << std::endl;
+        }
     }
 
     void showTree() {
