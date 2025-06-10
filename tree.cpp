@@ -172,21 +172,21 @@ class Tree {
     }
 
     void biggerThan(long long value) const {
-        std::vector<node*> bigFiles;
+        std::vector<node*> bigFiles; //cria um vetor para armazenar os arquivos
         
-        std::function<void(node*)> find;
-        find = [&](node* n){
-            if(!n) return;
+        std::function<void(node*)> find; //declaração da função lambda
+        find = [&](node* n){ 
+            if(!n) return; //se o né é nulo, retorna 
 
-            if(!n->directory){
-                if (n->size > value)
+            if(!n->directory){ //verifica se o nó não é um diretório
+                if (n->size > value) 
                 {
-                    bigFiles.push_back(n);
+                    bigFiles.push_back(n); //se o tamanho do nó for maior que o valor desejado coloca ele no vetor
                 }
             }
 
             for(node* child : n->children){
-                find(child);
+                find(child); //chama recursivamente a função de busca para o filho dese nó
             }
         };
 
@@ -196,7 +196,11 @@ class Tree {
             std::cout << "Nenhum arquivo encontrado.\n";
         } else{
             std::cout << "Arquivo(s) maior(es) que " << value << " bytes.\n";
+            for(node* n : bigFiles){
+                std::cout << n->path << "(" << n->size << " bytes)\n"; //percorre o vetor imprimindo caminho e tamanho dos arquivos
+            }
         }
+        
     }
 
     void showTree() {
