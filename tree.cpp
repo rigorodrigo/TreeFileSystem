@@ -4,6 +4,8 @@
 #include <filesystem>
 #include "verificarArquivoRegular.cpp"
 #include <iostream>
+#include <functional>
+
 
 namespace fs = std::filesystem;  // nomeando um namespace para facilitar 
 
@@ -112,7 +114,32 @@ class Tree {
         }
 
      }
+     
+     void findDirsRecursive(node* n, int& maxCount, std::vector<node*>& result) {
+        if (!n || !n->directory) return;
 
+        int fileCount = 0;
+
+        for (auto child : n->children) {
+            if (!child->directory) {
+                fileCount++;
+            }
+        }
+
+        if (fileCount > maxCount) {
+            maxCount = fileCount;
+            result.clear();
+            result.push_back(n);
+        } else if (fileCount == maxCount) {
+            result.push_back(n);
+        }
+
+        for (auto child : n->children) {
+            if (child->directory) {
+                findDirsRecursive(child, maxCount, result);
+            }
+        }
+    }
 
     public:
 
@@ -132,6 +159,96 @@ class Tree {
 
         return root != nullptr;        // retorna true se o carregamento foi feito com sucesso
                                       // caso contrário, retorna false
+    }
+
+    void findBiggerFile() const {
+        long long biggerSize = -1;
+        std::vector<std::string> biggerFiles; //cria um vetor que guarda o caminho para os maiores arquivos
+
+        std::function<void(node*)> find; // declaração prévia da função lambda
+        find = [&](node* n) { 
+            if (!n) return; //se o nó é nulo, retorna imediatamente
+
+            if (!n->directory) { //verifica se o nó não é um diretório
+                if (n->size > biggerSize) { //verifica se o tamanho de n é maior que o biggerSize atual
+                    biggerSize = n->size; //seta o maior atual como n
+                    biggerFiles.clear(); //limpa  o vetor
+                    biggerFiles.push_back(n->path); //coloca o caminho de n no vetor
+                } else if (n->size == biggerSize) { //se n for do mesmo tamanho que o maior atual
+                    biggerFiles.push_back(n->path); //coloca o caminho dele no vetor também
+                }
+            }
+
+            for (node* child : n->children) { //percorre recursivamente todos os filhos do nó atual chamando find() 
+                find(child);
+            }
+        };
+
+        find(root);
+
+        if (biggerFiles.empty()) { //se o vetor está vazio
+            std::cout << "Nenhum arquivo encontrado.\n";
+        } else { //imprimindo os encontrados
+            std::cout << "Maior(es) arquivo(s):\n";
+            for (const std::string& path : biggerFiles) {
+                std::cout << path << " (" << biggerSize << " bytes)\n";
+            }
+        }
+    }
+
+    void biggerThan(long long value) const {
+        std::vector<node*> bigFiles; //cria um vetor para armazenar os arquivos
+        
+        std::function<void(node*)> find; //declaração da função lambda
+        find = [&](node* n){ 
+            if(!n) return; //se o né é nulo, retorna 
+
+            if(!n->directory){ //verifica se o nó não é um diretório
+                if (n->size > value) 
+                {
+                    bigFiles.push_back(n); //se o tamanho do nó for maior que o valor desejado coloca ele no vetor
+                }
+            }
+
+            for(node* child : n->children){
+                find(child); //chama recursivamente a função de busca para o filho desse nó
+            }
+        };
+
+        find(root);
+
+        if(bigFiles.empty()){
+            std::cout << "Nenhum arquivo encontrado.\n";
+        } else{
+            std::cout << "Arquivo(s) maior(es) que " << value << " bytes.\n";
+            for(node* n : bigFiles){
+                std::cout << n->path << "(" << n->size << " bytes)\n"; //percorre o vetor imprimindo caminho e tamanho dos arquivos
+            }
+        }
+        
+    }
+
+
+    void findDirsWithMostFiles() {
+        if (!root) {
+            std::cout << "Árvore vazia.\n";
+            return;
+        }
+
+        int maxCount = -1;
+        std::vector<node*> result;
+
+        findDirsRecursive(root, maxCount, result);
+
+        if (maxCount <= 0) {
+            std::cout << "Nenhuma pasta com arquivos encontrados.\n";
+            return;
+        }
+
+        std::cout << "Pasta(s) com mais arquivos diretos (" << maxCount << " arquivo(s)):\n";
+        for (auto dir : result) {
+            std::cout << "- " << dir->path << std::endl;
+        }
     }
 
     void showTree() {
