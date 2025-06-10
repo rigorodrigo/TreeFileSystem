@@ -18,7 +18,7 @@ void displayMainMenu() {
 void displaySearchSubMenu() {
     cout << "\n--- Buscar ---" << endl;
     cout << " 1. Maior arquivo" << endl;
-    cout << " Arquivos maiores que N bytes" << endl;
+    cout << " 2. Arquivos maiores que N bytes" << endl;
     cout << " Pasta com mais arquivos" << endl;
     cout << " Arquivos por extensão específica" << endl;
     cout << " Pastas vazias" << endl;
@@ -78,6 +78,13 @@ int main(int argc, char* argv[]) {
                     }
                     if (subChoice == 1) {
                         fileSystemExplorer.findBiggerFile();
+                        break;
+                    }
+                    if (subChoice == 2) {
+                        cout << "Você quer arquivos maiores que quantos bytes?\n";
+                        long long value;
+                        cin >> value;
+                        fileSystemExplorer.biggerThan(value);
                         break;
                     }
                     if (subChoice == 9) {

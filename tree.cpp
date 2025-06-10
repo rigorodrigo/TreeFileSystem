@@ -138,36 +138,64 @@ class Tree {
 
     void findBiggerFile() const {
         long long biggerSize = -1;
-        std::vector<std::string> biggerFiles;
+        std::vector<std::string> biggerFiles; //cria um vetor que guarda o caminho para os maiores arquivos
 
-        std::function<void(node*)> find; // declaração prévia
-        find = [&](node* n) {
-            if (!n) return;
+        std::function<void(node*)> find; // declaração prévia da função lambda
+        find = [&](node* n) { 
+            if (!n) return; //se o nó é nulo, retorna imediatamente
 
-            if (!n->directory) {
-                if (n->size > biggerSize) {
-                    biggerSize = n->size;
-                    biggerFiles.clear();
-                    biggerFiles.push_back(n->path);
-                } else if (n->size == biggerSize) {
-                    biggerFiles.push_back(n->path);
+            if (!n->directory) { //verifica se o nó não é um diretório
+                if (n->size > biggerSize) { //verifica se o tamanho de n é maior que o biggerSize atual
+                    biggerSize = n->size; //seta o maior atual como n
+                    biggerFiles.clear(); //limpa  o vetor
+                    biggerFiles.push_back(n->path); //coloca o caminho de n no vetor
+                } else if (n->size == biggerSize) { //se n for do mesmo tamanho que o maior atual
+                    biggerFiles.push_back(n->path); //coloca o caminho dele no vetor também
                 }
             }
 
-            for (node* child : n->children) {
+            for (node* child : n->children) { //percorre recursivamente todos os filhos do nó atual chamando find() 
                 find(child);
             }
         };
 
         find(root);
 
-        if (biggerFiles.empty()) {
+        if (biggerFiles.empty()) { //se o vetor está vazio
             std::cout << "Nenhum arquivo encontrado.\n";
-        } else {
+        } else { //imprimindo os encontrados
             std::cout << "Maior(es) arquivo(s):\n";
             for (const std::string& path : biggerFiles) {
                 std::cout << path << " (" << biggerSize << " bytes)\n";
             }
+        }
+    }
+
+    void biggerThan(long long value) const {
+        std::vector<node*> bigFiles;
+        
+        std::function<void(node*)> find;
+        find = [&](node* n){
+            if(!n) return;
+
+            if(!n->directory){
+                if (n->size > value)
+                {
+                    bigFiles.push_back(n);
+                }
+            }
+
+            for(node* child : n->children){
+                find(child);
+            }
+        };
+
+        find(root);
+
+        if(bigFiles.empty()){
+            std::cout << "Nenhum arquivo encontrado.\n";
+        } else{
+            std::cout << "Arquivo(s) maior(es) que " << value << " bytes.\n";
         }
     }
 
