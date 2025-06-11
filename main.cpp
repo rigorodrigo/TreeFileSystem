@@ -87,11 +87,18 @@ int main(int argc, char* argv[]) {
                         fileSystemExplorer.biggerThan(value);
                         break;
                     }
-                    if (subChoice == 3){
+                    if (subChoice == 3) {
                         fileSystemExplorer.findDirsWithMostFiles();
                         break;
                     }
-                    if (subChoice == 5){
+                    if (subChoice == 4) {
+                        cout << "Qual a extensão desejada para a busca?(ex: .cpp)\n";
+                        string value;
+                        cin >> value;
+                        fileSystemExplorer.findFilesWithExtension(value);
+                        break;
+                    }
+                    if (subChoice == 5) {
                         fileSystemExplorer.findEmptyDirs();
                         break;
                     }

@@ -287,6 +287,41 @@ class Tree {
         }
     }
 
+    void findFilesWithExtension(const std::string& extension) const {
+        if (!root) {
+            std::cout << "Árvore vazia.\n"; //vê se o nó raiz existe e, caso contrário encerra a função
+            return;
+        }
+
+        std::vector<node*> matchingFiles; //vetor para armazenas as correspondências 
+
+        std::function<void(node*)> find;
+        find = [&](node* n) {
+            if (!n) return; //se o nó atual for nulo, retorna imediatamente
+
+            if (!n->directory) { 
+                if (fs::path(n->name).extension() == extension) {
+                    matchingFiles.push_back(n); //se n não for um diretório, verifica a extensão, e caso for correspondente adiciona n ao vetor
+                }
+            }
+
+            for (node* child : n->children) {
+                find(child); //roda recursivamente a função find a partir dos filhos 
+            }
+        };
+
+        find(root);
+
+        if (matchingFiles.empty()) {
+            std::cout << "Nenhum arquivo com a extensão '" << extension << "' encontrado.\n";
+        } else {
+            std::cout << "Arquivo(s) com a extensão '" << extension << "':\n";
+            for (node* file : matchingFiles) {
+                std::cout << "- " << file->path << " (" << file->size << " bytes)\n"; //imprime, conforme foram encontrados(ou não) os arquivos
+            }
+        }
+    }
+
     void showTree() {
 
         showRecursiveTree(root);
