@@ -139,7 +139,22 @@ class Tree {
                 findDirsRecursive(child, maxCount, result); //faz a chamada da função recursiva para os filhos que sejam diretórios, assim rodando toda a árvore
             }
         }
-    }
+     }
+
+     void findEmptyDirsRecursive(node* n, std::vector<node*>& result){
+        if (!n || !n->directory) return;
+
+        if (n->children.empty()){
+            result.push_back(n);
+        }
+
+        for(auto child : n->children){
+            if (child && child->directory)
+            {
+                findEmptyDirsRecursive(child, result);
+            }
+        }
+     }
 
     public:
 
@@ -248,6 +263,27 @@ class Tree {
         std::cout << "Pasta(s) com mais arquivos diretos (" << maxCount << " arquivo(s)):\n";
         for (auto dir : result) {
             std::cout << "- " << dir->path << std::endl; //percorre o vetor result com as pastas que contém mais arquivos, imprimindo-as
+        }
+    }
+
+    void findEmptyDirs(){
+        if (!root) {
+            std::cout << "Árvore vazia.\n"; //se o nó raiz é nulo, informa que a árvore está vazia e encerra a função
+            return;
+        }
+
+        std::vector<node*> result;
+
+        findEmptyDirsRecursive(root, result);
+
+        if (result.empty())
+        {
+            std::cout << "Nenhuma pasta sem arquivos encontrada.";
+        }else{
+            std::cout << "Pasta(s) vazia(s):\n";
+            for (auto dir : result){
+                std::cout << "- " << dir->path << std::endl;
+            }
         }
     }
 
