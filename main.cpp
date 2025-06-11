@@ -91,7 +91,10 @@ int main(int argc, char* argv[]) {
                         fileSystemExplorer.findDirsWithMostFiles();
                         break;
                     }
-                    
+                    if (subChoice == 5){
+                        fileSystemExplorer.findEmptyDirs();
+                        break;
+                    }
                     if (subChoice == 9) {
                         cout << "Retornando ao menu principal." << endl;
                         break;
