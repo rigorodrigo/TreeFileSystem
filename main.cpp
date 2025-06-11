@@ -19,9 +19,9 @@ void displaySearchSubMenu() {
     cout << "\n--- Buscar ---" << endl;
     cout << " 1. Maior arquivo" << endl;
     cout << " 2. Arquivos maiores que N bytes" << endl;
-    cout << " Pasta com mais arquivos" << endl;
-    cout << " Arquivos por extensão específica" << endl;
-    cout << " Pastas vazias" << endl;
+    cout << " 3. Pasta com mais arquivos" << endl;
+    cout << " 4. Arquivos por extensão específica" << endl;
+    cout << " 5. Pastas vazias" << endl;
     cout << " 9. Voltar ao menu principal" << endl;
     cout << "---------------------------" << endl;
     cout << "Escolha uma tarefa de busca: ";
@@ -87,6 +87,11 @@ int main(int argc, char* argv[]) {
                         fileSystemExplorer.biggerThan(value);
                         break;
                     }
+                    if (subChoice == 3){
+                        fileSystemExplorer.findDirsWithMostFiles();
+                        break;
+                    }
+                    
                     if (subChoice == 9) {
                         cout << "Retornando ao menu principal." << endl;
                         break;
