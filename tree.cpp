@@ -115,28 +115,28 @@ class Tree {
 
      }
      
-     void findDirsRecursive(node* n, int& maxCount, std::vector<node*>& result) {
+     void findDirsRecursive(node* n, int& maxCount, std::vector<node*>& result) { //nó atual, referência ao maior número de filhos até agora, referência ao vetor onde serão armazenados os diretórios
         if (!n || !n->directory) return;
 
         int fileCount = 0;
 
         for (auto child : n->children) {
             if (!child->directory) {
-                fileCount++;
+                fileCount++; //itera sobre os filhos do nó atual, incrementando fileCount caso não seja um diretório
             }
         }
 
         if (fileCount > maxCount) {
             maxCount = fileCount;
             result.clear();
-            result.push_back(n);
+            result.push_back(n); //se o valor do fileCount é maior que o maxCount atual, atualiza maxCount com esse valor, limpa o vetor antigo e adiciona n ao vetor 
         } else if (fileCount == maxCount) {
-            result.push_back(n);
+            result.push_back(n); //se o file count é igual ao maxCount atual, apenas adiciona n ao vetor
         }
 
         for (auto child : n->children) {
             if (child->directory) {
-                findDirsRecursive(child, maxCount, result);
+                findDirsRecursive(child, maxCount, result); //faz a chamada da função recursiva para os filhos que sejam diretórios, assim rodando toda a árvore
             }
         }
     }
@@ -231,14 +231,14 @@ class Tree {
 
     void findDirsWithMostFiles() {
         if (!root) {
-            std::cout << "Árvore vazia.\n";
+            std::cout << "Árvore vazia.\n"; //se o nó raiz é nulo, informa que a árvore está vazia e encerra a função
             return;
         }
 
         int maxCount = -1;
         std::vector<node*> result;
 
-        findDirsRecursive(root, maxCount, result);
+        findDirsRecursive(root, maxCount, result); //chama a função recursiva para preencher maxCount e result
 
         if (maxCount <= 0) {
             std::cout << "Nenhuma pasta com arquivos encontrados.\n";
@@ -247,7 +247,7 @@ class Tree {
 
         std::cout << "Pasta(s) com mais arquivos diretos (" << maxCount << " arquivo(s)):\n";
         for (auto dir : result) {
-            std::cout << "- " << dir->path << std::endl;
+            std::cout << "- " << dir->path << std::endl; //percorre o vetor result com as pastas que contém mais arquivos, imprimindo-as
         }
     }
 
