@@ -10,7 +10,7 @@ void displayMainMenu() {
     cout << "1. Mostrar arquivos" << endl;
     cout << "2. Exportar para HTML (ainda não feito)" << endl;
     cout << "3. Submenu" << endl;
-    cout << "0. Sair do progrma" << endl;
+    cout << "0. Sair do programa" << endl;
     cout << "-----------------------" << endl;
     cout << "opção: ";
 }
@@ -78,29 +78,29 @@ int main(int argc, char* argv[]) {
                     }
                     if (subChoice == 1) {
                         fileSystemExplorer.findBiggerFile();
-                        break;
+                        continue;
                     }
                     if (subChoice == 2) {
                         cout << "Você quer arquivos maiores que quantos bytes?\n";
                         long long value;
                         cin >> value;
                         fileSystemExplorer.biggerThan(value);
-                        break;
+                        continue;
                     }
                     if (subChoice == 3) {
                         fileSystemExplorer.findDirsWithMostFiles();
-                        break;
+                        continue;
                     }
                     if (subChoice == 4) {
                         cout << "Qual a extensão desejada para a busca?(ex: .cpp)\n";
                         string value;
                         cin >> value;
                         fileSystemExplorer.findFilesWithExtension(value);
-                        break;
+                        continue;
                     }
                     if (subChoice == 5) {
                         fileSystemExplorer.findEmptyDirs();
-                        break;
+                        continue;
                     }
                     if (subChoice == 9) {
                         cout << "Retornando ao menu principal." << endl;

@@ -5,6 +5,7 @@
 #include "verificarArquivoRegular.cpp"
 #include <iostream>
 #include <functional>
+#include <fstream>
 
 
 namespace fs = std::filesystem;  // nomeando um namespace para facilitar 
@@ -114,7 +115,28 @@ class Tree {
         }
 
      }
-     
+
+     void showRecursiveTree2(node* n, const std::string& prefix = "", bool isLast = true) {
+        if (!n) return;
+
+        std::cout << prefix;
+
+        if (!prefix.empty()) {
+            std::cout << (isLast ? "└── " : "├── ");
+        }
+
+        if (n->directory) {
+            std::cout << n->name << " (" << n->children.size() << " filhos, " << n->size << " bytes)" << std::endl;
+        } else {
+            std::cout << n->name << " (" << n->size << " bytes)" << std::endl;
+        }
+
+        for (size_t i = 0; i < n->children.size(); ++i) {
+            bool last = (i == n->children.size() - 1);
+            showRecursiveTree2(n->children[i], prefix + (isLast ? "    " : "│   "), last);
+        }
+     }
+    
      void findDirsRecursive(node* n, int& maxCount, std::vector<node*>& result) { //nó atual, referência ao maior número de filhos até agora, referência ao vetor onde serão armazenados os diretórios
         if (!n || !n->directory) return;
 
@@ -320,6 +342,31 @@ class Tree {
                 std::cout << "- " << file->path << " (" << file->size << " bytes)\n"; //imprime, conforme foram encontrados(ou não) os arquivos
             }
         }
+    }
+
+    void exportToHTML(const std::string& filename) {
+        std::ofstream out(filename);
+        if (!out.is_open()) {
+            std::cerr << "Erro ao abrir o arquivo para escrita.\n";
+            return;
+        }
+        out << "<html><body><ul>";
+        std::function<void(node*, int)> writeHTML = [&](node* n, int indent) {
+            if (!n) return;
+            out << "<li>" << n->name;
+            if (n->directory) {
+                out << "<ul>";
+                for (node* child : n->children) {
+                    writeHTML(child, indent + 1);
+                }
+                out << "</ul>";
+            }
+            out << "</li>";
+        };
+        writeHTML(root, 0);
+        out << "</ul></body></html>";
+        out.close();
+        std::cout << "Árvore exportada com sucesso para " << filename << "\n";
     }
 
     void showTree() {
