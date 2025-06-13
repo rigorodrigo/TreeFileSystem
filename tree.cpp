@@ -94,29 +94,9 @@ class Tree {
         return directoryNode;
     }
 
-     void showRecursiveTree (node* n, int level = 0,std::string s = "") {
+   
 
-        if (!n) return;
-
-        if (n->directory){       // se for uma pasta
-            std::cout << s << n->name << " ( " << n->children.size() << " filhos, " << n->size << " bytes)" << std::endl;
-        }
-        else {   // se for um arquivo
-            std::cout << n->name << " (" << n->size << " bytes)" << std::endl;
-        }
-
-        for (int i = 0; i < n->children.size(); i++){       // iiterando sobre o vetor com os filhos
-            if ( i == (n->children.size() - 1) ){        // se for o último filho
-                showRecursiveTree(n->children[i],level +1, s + "└── ");
-            }
-            else{         // se não for o último filho
-                showRecursiveTree(n->children[i],level + 1, s + "├──");
-            }
-        }
-
-     }
-
-     void showRecursiveTree2(node* n, const std::string& prefix = "", bool isLast = true) {
+     void showRecursiveTree(node* n, const std::string& prefix = "", bool isLast = true) {
         if (!n) return;
 
         std::cout << prefix;
@@ -133,7 +113,7 @@ class Tree {
 
         for (size_t i = 0; i < n->children.size(); ++i) {
             bool last = (i == n->children.size() - 1);
-            showRecursiveTree2(n->children[i], prefix + (isLast ? "    " : "│   "), last);
+            showRecursiveTree(n->children[i], prefix + (isLast ? "    " : "│   "), last);
         }
      }
     
