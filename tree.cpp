@@ -94,6 +94,14 @@ class Tree {
         return directoryNode;
     }
 
+    ssize_t directorySize(node *n){   // função para pegar o tamanho em bytes do diretório
+        ssize_t size = 0;
+        for(auto a: n->children){
+            size += a->size;
+        }
+        return size;
+    }
+
    
 
      void showRecursiveTree(node* n, const std::string& prefix = "", bool isLast = true) {
@@ -106,7 +114,7 @@ class Tree {
         }
 
         if (n->directory) {
-            std::cout << n->name << " (" << n->children.size() << " filhos, " << n->size << " bytes)" << std::endl;
+            std::cout << n->name << " (" << n->children.size() << " filhos, " << directorySize(n) << " bytes)" << std::endl;
         } else {
             std::cout << n->name << " (" << n->size << " bytes)" << std::endl;
         }
