@@ -94,34 +94,49 @@ class Tree {
         return directoryNode;
     }
 
-    ssize_t directorySize(node *n){   // função para pegar o tamanho em bytes do diretório
+     ssize_t directorySize(node *n){   // função para pegar o tamanho em bytes do diretório
         ssize_t size = 0;
-        for(auto a: n->children){
-            size += a->size;
-        }
+        
+        std::function<void(node*)> accSize; // declaração prévia da função lambda
+        accSize = [&](node* n) { 
+            if (!n) return; //se o nó é nulo, retorna imediatamente
+
+            if (n->directory) { //verifica se o nó é um diretório
+                for(auto a: n->children){
+                   size += a->size; //laço para atualizar o size conforme o tamanho dos filhos
+                }
+            }
+
+            for (node* child : n->children) { //percorre recursivamente todos os filhos do nó atual chamando find() 
+                accSize(child);
+            }
+        };
+
+        accSize(n); //chama a função lambda
+
         return size;
-    }
+     }
 
    
 
      void showRecursiveTree(node* n, const std::string& prefix = "", bool isLast = true) {
-        if (!n) return;
+        if (!n) return; 
 
-        std::cout << prefix;
+        std::cout << prefix; //imprime o prefix
 
         if (!prefix.empty()) {
-            std::cout << (isLast ? "└── " : "├── ");
+            std::cout << (isLast ? "└── " : "├── "); //se for o nó raiz o prefix é vazio, caso contrário entra em uma condicional usando o isLast para saber qual símbolo imprimir
         }
 
         if (n->directory) {
-            std::cout << n->name << " (" << n->children.size() << " filhos, " << directorySize(n) << " bytes)" << std::endl;
+            std::cout << n->name << " (" << n->children.size() << " filhos, " << directorySize(n) << " bytes)" << std::endl; //se for pasta, imprime o nome, quantidade de filhos e tamanho
         } else {
-            std::cout << n->name << " (" << n->size << " bytes)" << std::endl;
+            std::cout << n->name << " (" << n->size << " bytes)" << std::endl; //se for arquivo, imprime o nome e tamanho
         }
 
-        for (size_t i = 0; i < n->children.size(); ++i) {
-            bool last = (i == n->children.size() - 1);
-            showRecursiveTree(n->children[i], prefix + (isLast ? "    " : "│   "), last);
+        for (size_t i = 0; i < n->children.size(); ++i) { //inicia um loop para visitar todos os filhos do nó atual
+            bool last = (i == n->children.size() - 1); //verifica se o filho atual é o ultimo da lista
+            showRecursiveTree(n->children[i], prefix + (isLast ? "    " : "│   "), last); //chama a função recursivamente para o filho atual
         }
      }
     
@@ -152,16 +167,16 @@ class Tree {
      }
 
      void findEmptyDirsRecursive(node* n, std::vector<node*>& result){
-        if (!n || !n->directory) return;
+        if (!n || !n->directory) return; //se n não existe ou é arquivo, termina a execução da função
 
         if (n->children.empty()){
-            result.push_back(n);
+            result.push_back(n); //se n não tem filhos, adiciona n ao vetor que guarda as pastas vazias
         }
 
         for(auto child : n->children){
             if (child && child->directory)
             {
-                findEmptyDirsRecursive(child, result);
+                findEmptyDirsRecursive(child, result); //roda recursivamente a função para os filhos do nó atual
             }
         }
      }
@@ -284,7 +299,7 @@ class Tree {
 
         std::vector<node*> result;
 
-        findEmptyDirsRecursive(root, result);
+        findEmptyDirsRecursive(root, result); //chama a função recursiva no escopo privado que preenche o vetor result com as pastas vazias
 
         if (result.empty())
         {
@@ -292,7 +307,7 @@ class Tree {
         }else{
             std::cout << "Pasta(s) vazia(s):\n";
             for (auto dir : result){
-                std::cout << "- " << dir->path << std::endl;
+                std::cout << "- " << dir->path << std::endl; //se não tiver pastas vazias imprime uma mensagem, se tiver, imprime o caminho delas
             }
         }
     }
@@ -332,29 +347,29 @@ class Tree {
         }
     }
 
-    void exportToHTML(const std::string& filename) {
-        std::ofstream out(filename);
+    void exportToHTML(const std::string& filename) { //definição da função, que recebe como parâmetro o nome do arquivo de saída(precisa botar .html no final)
+        std::ofstream out(filename); //cria um objeto de saída, e caso ele exista substitui
         if (!out.is_open()) {
-            std::cerr << "Erro ao abrir o arquivo para escrita.\n";
+            std::cerr << "Erro ao abrir o arquivo para escrita.\n"; //verifica se o arquivo abriu corretamente, e caso contrário, exibe uma mensagem de erro e termina a execução
             return;
         }
-        out << "<html><body><ul>";
-        std::function<void(node*, int)> writeHTML = [&](node* n, int indent) {
+        out << "<html><body><ul>"; //escreve o início do arquivo html, iniciando uma unordered list onde cada item será um diretório ou arquivo
+        std::function<void(node*, int)> writeHTML = [&](node* n, int indent) { //declara uma função lambda recursiva
             if (!n) return;
-            out << "<li>" << n->name;
-            if (n->directory) {
-                out << "<ul>";
+            out << "<li>" << n->name; //escreve no arquivo de saída o nome do diretório ou arquivo da árvore
+            if (n->directory) { //verifica se n é uma pasta
+                out << "<ul>"; //começa uma nova lista 
                 for (node* child : n->children) {
-                    writeHTML(child, indent + 1);
+                    writeHTML(child, indent + 1); //chama recursivamente a função para os filhos de n, aumentando a identação
                 }
-                out << "</ul>";
+                out << "</ul>"; //fecha a lista 
             }
-            out << "</li>";
+            out << "</li>"; //fecha o item da lista 
         };
-        writeHTML(root, 0);
-        out << "</ul></body></html>";
-        out.close();
-        std::cout << "Árvore exportada com sucesso para " << filename << "\n";
+        writeHTML(root, 0); //chama a função lambda passando a raiz e a identação 0
+        out << "</ul></body></html>"; //fecha o documento html
+        out.close(); //fecha o arquivo
+        std::cout << "Árvore exportada com sucesso para " << filename << "\n"; //exibe mensagem de sucesso
     }
 
     void showTree() {
