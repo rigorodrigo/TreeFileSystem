@@ -8,7 +8,7 @@ using namespace std;
 void displayMainMenu() {
     cout << "\n--- Menu ---" << endl;
     cout << "1. Mostrar arquivos" << endl;
-    cout << "2. Exportar para HTML (ainda não feito)" << endl;
+    cout << "2. Exportar para HTML " << endl;
     cout << "3. Submenu" << endl;
     cout << "0. Sair do programa" << endl;
     cout << "-----------------------" << endl;
@@ -61,9 +61,14 @@ int main(int argc, char* argv[]) {
                 cout << "\n--- Exibindo Árvore do Sistema de Arquivos ---" << endl;
                 fileSystemExplorer.showTree();
                 break;
-            case 2:
-                cout << "Exportar para HTML: Ainda na prancheta. Volte mais tarde!" << endl;
+            case 2:{
+                cout << "Escolha o nome do arquivo de saída desejado: ";
+                string filename;
+                cin >> filename;
+                filename += ".html";
+                fileSystemExplorer.exportToHTML(filename);
                 break;
+            }
             case 3: {
                 int subChoice;
                 while (true) {
