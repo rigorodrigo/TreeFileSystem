@@ -14,7 +14,7 @@ struct node{ // para representar cada arquivo ou pasta , estrutra para isso
     std::string name;
     std::string path;
     bool directory;
-    long long size;//tamanho em bytes para arquivo
+    ssize_t size;//tamanho em bytes para arquivo
     std::vector<node*> children;
 
     node(std::string n, std::string p, bool Diretorio, long long s =0/*size*/);
@@ -43,7 +43,7 @@ class Tree {
             return nullptr; // caminho nao existe 
         }
 
-        if (!verificaArqRegularPasta(path.c_str())) return nullptr;   // chamando a função que verifica se é um arquivo regular ou uma pasta (usando o "c_str")
+        if (!verificaArqRegular(path.c_str())) return nullptr;   // chamando a função que verifica se é um arquivo regular ou uma pasta (usando o "c_str")
 
 
 
@@ -51,12 +51,12 @@ class Tree {
         //usando a bilbioteca filesystem, verifica se é um diretório
         if (!std::filesystem::is_directory(path)){
 
-            long long _file_size = 0;
+            ssize_t fileSize = 0;
 
 
                 //tratamento de erro (ideias de POO)
              try {
-                   _file_size = fs::file_size(path);  //se for arquivo retorna com seu tamanho
+                   fileSize = fs::file_size(path);  //se for arquivo retorna com seu tamanho
                  }  
                  catch (const fs::filesystem_error& e) {
 
@@ -67,19 +67,18 @@ class Tree {
         }
 
 
-        //futuramente um nodo para o tmamho do diretorio?
-         node *directoryNode = new node(fs::path(path).filename().string(), path, true);
-
             // se não for,  assume que é um nó folha (arquivo), e então retorna um  novo nó sem filhos,e seu nome,caminho,false para pasta e seu tamanho 
             // (também contando com ajuda da lib filesystem)
             
-             return new node(fs::path(path).filename().string(), path, false, _file_size);
+             return new node(fs::path(path).filename().string(), path, false, fileSize);
         }
 
-        node * directoryNode = new node (fs::path(path).filename(),path,true);      // se for um diretório, cria um nó para ele
+        node * directoryNode = new node (fs::path(path).filename().string(),path,true);      // se for um diretório, cria um nó para ele
+
 
         // e irei iterar sobre os arquivos do diretório com o "directory_iterator" ,também da lib filesystem
 
+        try{
         for (const auto& n : fs::directory_iterator(path)){
 
             // chama recursivamente a função passando o nó filho como parâmetro
@@ -89,12 +88,15 @@ class Tree {
                 directoryNode->children.push_back(childrenNode);       // se o nó filho existir (não for nulo), será adicionado ao vetor dos filhos
             }
         }
+        } catch (const fs::filesystem_error& erro) {
+            // se não tiver permissão para acessar, ignora o diretório
+        }
 
 
         return directoryNode;
     }
 
-     ssize_t directorySize(node *n){   // função para pegar o tamanho em bytes do diretório
+     ssize_t directorySize(node *n) const {   // função para pegar o tamanho em bytes do diretório
         ssize_t size = 0;
         
         std::function<void(node*)> accSize; // declaração prévia da função lambda
@@ -181,6 +183,15 @@ class Tree {
         }
      }
 
+     void clearTree (node *root) {
+        if (!root) return;
+        for (auto a : root->children){
+            clearTree(a);
+        }
+
+        delete root;
+     }
+
     public:
 
     // método público que inicializa a árvore a partir do caminho fornecido
@@ -188,7 +199,8 @@ class Tree {
     bool LoadTree (const std::string &path) {   
 
         if (root != nullptr){  // se já existe uma árvore inicializada...
-            // implementar forma de "limpar" a arvore ja existente
+            clearTree(root);  // limpa ela da memóriaAdd commentMore actions
+            root = nullptr;
         }
 
         if (!fs::exists(path)) {         // verifica se o caminho realmente existe
