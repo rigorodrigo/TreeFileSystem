@@ -21,7 +21,7 @@ Lembrando que o projeto irá considerar apenas arquivos regulares e pastas (dire
 - Compilador C++ compatível com C++17 ou superior;
 - Sistema operacional Linux;
 
-### Esecução
+### Execução
 
 No terminal (dentro do diretório que contém os arquivos), digite: 
    ```bash
@@ -38,3 +38,25 @@ Agora, para executar :
 ./explorador [caminho_opcional]
 ```
 Se não informar o caminho, será usado o diretório atual.
+
+Ao executar o binário, ele irá mostrar algo mais ou menos assim: 
+
+```bash
+Árvore carregada com sucesso! Pronto para explorar.
+--- Menu ---
+1. Mostrar arquivos
+2. Exportar para HTML 
+3. Submenu
+0. Sair do programa
+```
+
+No submenu: 
+```bash
+--- Buscar ---
+1. Maior arquivo
+2. Arquivos maiores que N bytes
+3. Pasta com mais arquivos
+4. Arquivos por extensão específica
+5. Pastas vazias
+9. Voltar ao menu principal
+```
