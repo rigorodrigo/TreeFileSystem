@@ -1,9 +1,9 @@
 # Árvore do Sistema de Arquivos
 
-Este projeto é de natureza exclusivamente didática, para fins de aprendizado sobre árvores em sistemas computacionais. Ele foi desenvolvido na linguagem C++ e tem como objetivo representar o sistema de arquivos em forma de árvore. A aplicação é capaz de carregar a estrutura de diretórios e arquivos a partir de um caminho informado (caso nenhum caminho seja especificado, a pasta atual será utilizada como diretório inicial), exibindo-os em formato de árvore no terminal. Além disso, oferece funcionalidades de busca e exportação para HTML.
+Este projeto é de natureza exclusivamente didática, para fins de aprendizado sobre árvores em sistemas computacionais. Ele foi desenvolvido na linguagem C++ e tem como objetivo representar o sistema de arquivos em forma de árvore. A aplicação é capaz de carregar a estrutura de diretórios e arquivos a partir de um caminho informado (caso nenhum caminho seja especificado, a pasta atual será utilizada como diretório inicial.), exibindo-os em formato de árvore no terminal. Além disso, oferece funcionalidades de busca e exportação para HTML.
 
 ## Funcionalidades Implementadas: 
-- Exibir sistema arquivos em formato de árvore via terminal;
+- Exibir o  sistema  de arquivos em formato de árvore via terminal;
 - Exportar a árvore para um arquivo HTML;
 - Permite buscar por:
     - Maior arquivo presente no caminho selecionado;
@@ -12,16 +12,22 @@ Este projeto é de natureza exclusivamente didática, para fins de aprendizado s
     - A pasta com mais arquivos no caminho especificado;
     - Pastas vazias;
 
-Lembrando que o projeto irá considerar apenas arquivos regulares e pastas (diretórios), ignorando links, dispositivos,sockets.
+Lembrando que o projeto irá considerar apenas arquivos regulares e pastas (diretórios), ignorando links, dispositivos, sockets.
+
+## Estrutura do Projeto
+
+- `main.cpp`: controla o menu e a interação com o usuário.  
+- `tree.cpp`: possui toda a implementação da lógica da árvore e funcionalidades relacionadas a ela.  
+- `verificarArquivoRegular.cpp`: verifica se o caminho é um arquivo regular ou diretório.  
 
 ## Como executar
 
-### Requisitos
+### ⚙️  Requisitos
 
 - Compilador C++ compatível com C++17 ou superior;
 - Sistema operacional Linux;
 
-### Execução
+### 🖥️ Execução
 
 No terminal (dentro do diretório que contém os arquivos), digite: 
    ```bash
@@ -33,7 +39,7 @@ Substitua <nome_do_binario> pelo nome que desejar para o executável. Exemplo:
 g++ main.cpp -o explorador
 ```
 
-Agora, para executar : 
+Agora, para executar: 
 ```bash
 ./explorador [caminho_opcional]
 ```
@@ -60,3 +66,9 @@ No submenu:
 5. Pastas vazias
 9. Voltar ao menu principal
 ```
+
+## Autores: 
+
+- **Nomes**: Rodrigo Rigo, Augusto Pasqualotto, Grégori Kempf
+- **Curso**: Ciência da Computação
+- **Universidade**: Universidade de Passo Fundo, UPF
