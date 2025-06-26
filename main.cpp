@@ -112,7 +112,6 @@ int main(int argc, char* argv[]) {
                         break;
                     }
 
-                    cout << "Essa funcionalidade de busca (" << subChoice << ") ainda não está implementada. Paciência, jovem padawan!" << endl;
                 }
                 break;
             }

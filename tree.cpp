@@ -194,7 +194,7 @@ class Tree {
 
     public:
 
-    Tree() : root(nullptr) {}  // construtor  inicializando o root como null ( estava dando erro em algumas máquinas) 
+    Tree() : root(nullptr) {}  // construtor  inicializando o root como null (sem essa inicialização possivelmente ele poderia pegar lixo de memória ou afins) 
 
     // método público que inicializa a árvore a partir do caminho fornecido
 
