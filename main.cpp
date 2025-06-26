@@ -22,7 +22,7 @@ void displaySearchSubMenu() {
     cout << " 3. Pasta com mais arquivos" << endl;
     cout << " 4. Arquivos por extensão específica" << endl;
     cout << " 5. Pastas vazias" << endl;
-    cout << " 9. Voltar ao menu principal" << endl;
+    cout << " 0. Voltar ao menu principal" << endl;
     cout << "---------------------------" << endl;
     cout << "Escolha uma tarefa de busca: ";
 }
