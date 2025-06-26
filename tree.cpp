@@ -372,12 +372,18 @@ class Tree {
             if (!n) return;
             out << "<li>" << n->name; //escreve no arquivo de saída o nome do diretório ou arquivo da árvore
             if (n->directory) { //verifica se n é uma pasta
+                out << " (" << n->children.size() << "  filho(s),  "  << directorySize(n) << " bytes)";
+                if (!n->children.empty()){
                 out << "<ul>"; //começa uma nova lista 
                 for (node* child : n->children) {
                     writeHTML(child, indent + 1); //chama recursivamente a função para os filhos de n, aumentando a identação
                 }
                 out << "</ul>"; //fecha a lista 
+                }
             }
+            else{
+                   out <<  " (" << n->size << " bytes)";
+                }
             out << "</li>"; //fecha o item da lista 
         };
         writeHTML(root, 0); //chama a função lambda passando a raiz e a identação 0
