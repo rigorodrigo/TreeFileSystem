@@ -224,7 +224,7 @@ class Tree {
             if (!n) return; //se o nó é nulo, retorna imediatamente
 
             if (!n->directory) { //verifica se o nó não é um diretório
-                if (n->size > biggerSize) { //verifica se o tamanho de n é maior que o biggerSize atual
+                if (n->size > biggerSize && n->name != "kcore") { //verifica se o tamanho de n é maior que o biggerSize atual ( decidimos ignorar o kcore)
                     biggerSize = n->size; //seta o maior atual como n
                     biggerFiles.clear(); //limpa  o vetor
                     biggerFiles.push_back(n->path); //coloca o caminho de n no vetor
