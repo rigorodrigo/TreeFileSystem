@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
                         fileSystemExplorer.findEmptyDirs();
                         continue;
                     }
-                    if (subChoice == 9) {
+                    if (subChoice == 0) {
                         cout << "Retornando ao menu principal." << endl;
                         break;
                     }
