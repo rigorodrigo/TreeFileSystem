@@ -2,7 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <filesystem>
-#include "verificarArquivoRegular.cpp"
+#include "verificarArquivoRegularOuPasta.cpp"
 #include <iostream>
 #include <functional>
 #include <fstream>
@@ -39,38 +39,14 @@ private:
     node *loadRecursive(const std::string &path)
     {
 
-        if (!fs::exists(path))
-        {
-            return nullptr; // caminho nao existe
-        }
-
-        if (!verificaArqRegular(path.c_str()))
-            return nullptr; // chamando a função que verifica se é um arquivo regular ou uma pasta (usando o "c_str")
+        if (!fs::exists(path) || !verificaArqRegularOuPasta(path.c_str()))
+            return nullptr; // caminho nao existe ou não é um aruiqvo regular nem diretório
 
         // usando a bilbioteca filesystem, verifica se é um diretório
-        if (!std::filesystem::is_directory(path))
+        if (!fs::is_directory(path))
         {
 
-            ssize_t fileSize = 0;
-
-            // tratamento de erro (ideias de POO)
-            try
-            {
-                fileSize = fs::file_size(path); // se for arquivo retorna com seu tamanho
-            }
-            catch (const fs::filesystem_error &e)
-            {
-
-                // vereficar
-                // executa somente quando ocorre erro, cerr(exclusivo para erros)                 e.what() -> retorna String que descreve o erro detalhadamente
-                std::cerr << "Aviso: Nao foi possível obter o tamanho do arquivo '" << path << "': " << e.what() << ". Sera considerado 0 bytes." << std::endl;
-                return new node(fs::path(path).filename().string(), path, false, 0);
-            }
-
-            // se não for,  assume que é um nó folha (arquivo), e então retorna um  novo nó sem filhos,e seu nome,caminho,false para pasta e seu tamanho
-            // (também contando com ajuda da lib filesystem)
-
-            return new node(fs::path(path).filename().string(), path, false, fileSize);
+            return new node(fs::path(path).filename().string(), path, false, fs::file_size(path));
         }
 
         node *directoryNode = new node(fs::path(path).filename().string(), path, true); // se for um diretório, cria um nó para ele
@@ -101,29 +77,19 @@ private:
 
     ssize_t directorySize(node *n) const
     { // função para pegar o tamanho em bytes do diretório
-        ssize_t size = 0;
 
-        std::function<void(node *)> accSize; // declaração prévia da função lambda
-        accSize = [&](node *n)
+        if (!n)
+            return 0; // se o nó é nulo, retorna imediatamente
+
+        if (!n->directory)
         {
-            if (!n)
-                return; // se o nó é nulo, retorna imediatamente
-
-            if (n->directory)
-            { // verifica se o nó é um diretório
-                for (auto a : n->children)
-                {
-                    size += a->size; // laço para atualizar o size conforme o tamanho dos filhos
-                }
-            }
-
-            for (node *child : n->children)
-            { // percorre recursivamente todos os filhos do nó atual chamando find()
-                accSize(child);
-            }
-        };
-
-        accSize(n); // chama a função lambda
+            return n->size;
+        }
+        ssize_t size = 0;
+        for (auto a : n->children)
+        {
+          size +=  directorySize(a);   // chama recursivamente a função para os filhos
+        }
 
         return size;
     }
