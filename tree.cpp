@@ -17,10 +17,10 @@ struct node
     ssize_t size; // tamanho em bytes para arquivo
     std::vector<node *> children;
 
-    node(std::string n, std::string p, bool Diretorio, long long s = 0 /*size*/);
+    node(std::string n, std::string p, bool Diretorio, ssize_t s = 0);
 };
 
-node::node(std::string n, std::string p, bool Diretorio, long long s)
+node::node(std::string n, std::string p, bool Diretorio, ssize_t s)
 { // construtor para inicializar os atributos
     name = n;
     path = p;
@@ -215,7 +215,7 @@ public:
 
     void findBiggerFile() const
     {
-        long long biggerSize = -1;
+        ssize_t biggerSize = -1;
         std::vector<std::string> biggerFiles; // cria um vetor que guarda o caminho para os maiores arquivos
 
         std::function<void(node *)> find; // declaração prévia da função lambda
