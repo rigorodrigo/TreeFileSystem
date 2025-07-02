@@ -176,6 +176,32 @@ private:
         }
     }
 
+    void findBiggerFileRecursive (node*n,ssize_t &biggerSize, std::vector<std::string> &biggerFiles) const { // função privada que  busca o maior arquivo e verifica recursivamente
+
+            if (!n)
+                return; // se o nó é nulo, retorna imediatamente
+
+            if (!n->directory)
+            { // verifica se o nó não é um diretório
+                if (n->size > biggerSize && n->path != "/proc/kcore")
+                {                                   // verifica se o tamanho de n é maior que o biggerSize atual ( decidimos ignorar o kcore)
+                    biggerSize = n->size;           // seta o maior atual como n
+                    biggerFiles.clear();            // limpa  o vetor
+                    biggerFiles.push_back(n->path); // coloca o caminho de n no vetor
+                }
+                else if (n->size == biggerSize)
+                {                                   // se n for do mesmo tamanho que o maior atual
+                    biggerFiles.push_back(n->path); // coloca o caminho dele no vetor também
+                }
+            }
+
+            for (node *child : n->children)
+            { // percorre recursivamente todos os filhos do nó atual
+                findBiggerFileRecursive(child,biggerSize,biggerFiles);
+            }
+
+    }
+
     void clearTree(node *root)
     {
         if (!root)
@@ -213,40 +239,14 @@ public:
                                 // caso contrário, retorna false
     }
 
-    void findBiggerFile() const
+    void findBiggerFile() const   // função pública que inicializa as variáveis e passa elas como parâmetro para a função privada
     {
         ssize_t biggerSize = -1;
         std::vector<std::string> biggerFiles; // cria um vetor que guarda o caminho para os maiores arquivos
 
-        std::function<void(node *)> find; // declaração prévia da função lambda
-        find = [&](node *n)
-        {
-            if (!n)
-                return; // se o nó é nulo, retorna imediatamente
+       findBiggerFileRecursive(root,biggerSize,biggerFiles);
 
-            if (!n->directory)
-            { // verifica se o nó não é um diretório
-                if (n->size > biggerSize && n->path != "/proc/kcore")
-                {                                   // verifica se o tamanho de n é maior que o biggerSize atual ( decidimos ignorar o kcore)
-                    biggerSize = n->size;           // seta o maior atual como n
-                    biggerFiles.clear();            // limpa  o vetor
-                    biggerFiles.push_back(n->path); // coloca o caminho de n no vetor
-                }
-                else if (n->size == biggerSize)
-                {                                   // se n for do mesmo tamanho que o maior atual
-                    biggerFiles.push_back(n->path); // coloca o caminho dele no vetor também
-                }
-            }
-
-            for (node *child : n->children)
-            { // percorre recursivamente todos os filhos do nó atual chamando find()
-                find(child);
-            }
-        };
-
-        find(root);
-
-        if (biggerFiles.empty())
+       if (biggerFiles.empty())
         { // se o vetor está vazio
             std::cout << "Nenhum arquivo encontrado.\n";
         }
